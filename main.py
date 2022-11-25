@@ -1,16 +1,32 @@
-# This is a sample Python script.
+# %matplotlib inline
+import matplotlib as matplotlib
 
-# Press ⌃R to execute it or replace it with your code.
-# Press Double ⇧ to search everywhere for classes, files, tool windows, actions, and settings.
+from time import sleep
+from IPython.display import display, clear_output
+import matplotlib as mpl
+import matplotlib.animation
+import matplotlib.cm as cm
+import matplotlib.pyplot as plt
+import matplotlib.style as style
+from matplotlib import lines
+from matplotlib.colors import ListedColormap
+from mpl_toolkits.mplot3d import Axes3D
+import numpy as np
+import pandas as pd
+import plotly.express as px
+import seaborn as sns
+from sklearn.cluster import estimate_bandwidth
+from sklearn.cluster import KMeans
+from sklearn.cluster import MeanShift
+from sklearn.cluster import DBSCAN
+from sklearn.cluster import AgglomerativeClustering
+from sklearn.datasets import make_blobs # Datasets
+from sklearn.datasets import make_moons
+from sklearn.datasets import make_circles 
+from sklearn.model_selection import train_test_split  # Cross validation library
 
+# Additional functions for data visualization
+from i2ai_utilities import show_scatter_3d, show_scatter, plotly_scatter_3d, show_risk_by_cluster, plot_dendrogram
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press ⌘F8 to toggle the breakpoint.
-
-
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
-
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+X, y = make_moons(n_samples=200, noise=0.05)
+show_scatter(X)
