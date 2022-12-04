@@ -28,6 +28,8 @@ from sklearn.model_selection import train_test_split  # Cross validation library
 
 # Additional functions for data visualization
 from i2ai_utilities import show_scatter_3d, show_scatter, plotly_scatter_3d, show_risk_by_cluster, plot_dendrogram
+from sklearn.datasets import load_sample_image
+from PIL import Image
 
 def moons():
     X, y = make_moons(n_samples=200, noise=0.05)
@@ -135,11 +137,85 @@ def circles():
     plot_dendrogram(ac, truncate_mode='level', p=4)
     show_scatter(X, y_pred)
 
+def plot_pixels(data, title, colors=None, N=10000):
+    if colors is None:
+        colors = data
 
+    # choose a random subset
+    rng = np.random.RandomState(0)
+    i = rng.permutation(data.shape[0])[:N]
+    colors = colors[i]
+    R, G, B = data[i].T
+
+    fig, ax = plt.subplots(1, 2, figsize=(16, 6))
+    ax[0].scatter(R, G, color=colors, marker='.')
+    ax[0].set(xlabel='Red', ylabel='Green', xlim=(0, 1), ylim=(0, 1))
+
+    ax[1].scatter(R, B, color=colors, marker='.')
+    ax[1].set(xlabel='Red', ylabel='Blue', xlim=(0, 1), ylim=(0, 1))
+
+    fig.suptitle(title, size=20);
+
+def photo():
+    china = Image.open('NewYork.jpg')
+    china = np.asarray(china)
+
+    ax = plt.axes(xticks=[], yticks=[])
+    ax.imshow(china)
+    plt.show()
+
+
+    print(china.shape)
+
+    data = china / 255.0  # use 0...1 scale
+    data = data.reshape(2368 * 4209, 3)
+    print(data.shape)
+
+    plot_pixels(data, title='Input color space: 16 million possible colors')
+    plt.show()
+
+    kmeans = KMeans(n_clusters=16)
+    kmeans.fit(data)
+    new_colors = kmeans.cluster_centers_[kmeans.predict(data)]
+
+    plot_pixels(data, colors=new_colors,
+                title="Reduced color space: 16 colors")
+
+    china_recolored = new_colors.reshape(china.shape)
+
+    fig, ax = plt.subplots(1, 2, figsize=(16, 6),
+                           subplot_kw=dict(xticks=[], yticks=[]))
+    fig.subplots_adjust(wspace=0.05)
+    ax[0].imshow(china)
+    ax[0].set_title('Original Image - 16 million possible colors', size=16)
+    ax[1].imshow(china_recolored)
+    ax[1].set_title('16-color Image', size=16);
+    plt.show()
+
+    ########################################### 10 colors
+
+    kmeans = KMeans(n_clusters=10)
+    kmeans.fit(data)
+    new_colors = kmeans.cluster_centers_[kmeans.predict(data)]
+
+    plot_pixels(data, colors=new_colors,
+                title="Reduced color space: 10 colors")
+
+    china_recolored = new_colors.reshape(china.shape)
+
+    fig, ax = plt.subplots(1, 2, figsize=(16, 6),
+                           subplot_kw=dict(xticks=[], yticks=[]))
+    fig.subplots_adjust(wspace=0.05)
+    ax[0].imshow(china)
+    ax[0].set_title('Original Image', size=16)
+    ax[1].imshow(china_recolored)
+    ax[1].set_title('10-color Image', size=16);
+    plt.show()
 
 if __name__ == '__main__':
-    moons()
-    circles()
+    # moons()
+    # circles()
+    photo()
 
 
 
