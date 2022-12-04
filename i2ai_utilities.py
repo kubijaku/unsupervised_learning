@@ -92,6 +92,7 @@ def show_scatter(data, prediction=None, centers=[]):
       plt.scatter(data[:,0], data[:,1])
     for center in centers:
         plt.scatter(center[0], center[1], marker="X", s=300, color='red')
+    plt.show()
 
 # Plotly 3D scatter chart is almost a one-liner, but use this function to keep the params in one place
 
@@ -151,3 +152,4 @@ def plot_dendrogram(model, **kwargs):
 
     # Plot the corresponding dendrogram
     dendrogram(linkage_matrix, **kwargs)
+    plt.show()

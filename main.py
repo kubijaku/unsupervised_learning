@@ -1,6 +1,7 @@
 # %matplotlib inline
 import matplotlib as matplotlib
 
+
 from time import sleep
 from IPython.display import display, clear_output
 import matplotlib as mpl
@@ -28,5 +29,117 @@ from sklearn.model_selection import train_test_split  # Cross validation library
 # Additional functions for data visualization
 from i2ai_utilities import show_scatter_3d, show_scatter, plotly_scatter_3d, show_risk_by_cluster, plot_dendrogram
 
-X, y = make_moons(n_samples=200, noise=0.05)
-show_scatter(X)
+def moons():
+    X, y = make_moons(n_samples=200, noise=0.05)
+    # show_scatter(X)
+
+    k = 2
+    kmeans = KMeans(n_clusters=k)
+    y_pred = kmeans.fit_predict(X)
+    centers = kmeans.cluster_centers_
+    print(kmeans.inertia_)
+    show_scatter(X, y_pred, centers)
+
+    km_list = list()
+
+    for k in range(1, 10):
+        km = KMeans(n_clusters=k)
+        y_pred = km.fit(X)
+        km_list.append(pd.Series({'clusters': k,
+                                  'inertia': km.inertia_}))
+    plot_data = (pd.concat(km_list, axis=1)
+                 .T
+                 [['clusters', 'inertia']]
+                 .set_index('clusters'))
+
+    ax = plot_data.plot(marker='o', ls='-')
+    ax.set_xticks(range(0, 10, 1))
+    ax.set_xlim(0, 10)
+    ax.set(xlabel='Cluster', ylabel='Inertia')
+    plt.show()
+    ###########################################
+
+
+    dbscan = DBSCAN(eps=0.3)
+    y_pred = dbscan.fit_predict(X)
+    print('Number of clusters:', len(set(y_pred)) - (1 if -1 in y_pred else 0))
+    print('Number of outliers:', list(y_pred).count(-1))
+    show_scatter(X, y_pred)
+    #########################################
+
+    ac = AgglomerativeClustering(n_clusters=None, distance_threshold=3,
+                                 affinity='euclidean', linkage='complete')
+    y_pred = ac.fit_predict(X)
+    print('Number of clusters:', len(set(y_pred)))
+    plot_dendrogram(ac, truncate_mode='level', p=4)
+    show_scatter(X, y_pred)
+
+    ac = AgglomerativeClustering(n_clusters=None, distance_threshold=3,
+                                 affinity='l1', linkage='complete')
+    y_pred = ac.fit_predict(X)
+    print('Number of clusters:', len(set(y_pred)))
+    plot_dendrogram(ac, truncate_mode='level', p=4)
+    show_scatter(X, y_pred)
+
+def circles():
+    X, y = make_circles(n_samples=200, factor=0.5, noise=0.05)
+    # show_scatter(X)
+
+    k = 2
+    kmeans = KMeans(n_clusters=k)
+    y_pred = kmeans.fit_predict(X)
+    centers = kmeans.cluster_centers_
+    print(kmeans.inertia_)
+    show_scatter(X, y_pred, centers)
+
+    km_list = list()
+
+    for k in range(1, 10):
+        km = KMeans(n_clusters=k)
+        y_pred = km.fit(X)
+        km_list.append(pd.Series({'clusters': k,
+                                  'inertia': km.inertia_}))
+    plot_data = (pd.concat(km_list, axis=1)
+                 .T
+                 [['clusters', 'inertia']]
+                 .set_index('clusters'))
+
+    ax = plot_data.plot(marker='o', ls='-')
+    ax.set_xticks(range(0, 10, 1))
+    ax.set_xlim(0, 10)
+    ax.set(xlabel='Cluster', ylabel='Inertia')
+    plt.show()
+    ###########################################
+
+
+    dbscan = DBSCAN(eps=0.25)
+    y_pred = dbscan.fit_predict(X)
+    print('Number of clusters:', len(set(y_pred)) - (1 if -1 in y_pred else 0))
+    print('Number of outliers:', list(y_pred).count(-1))
+    show_scatter(X, y_pred)
+    ########################################
+
+    ac = AgglomerativeClustering(n_clusters=None, distance_threshold=2.2,
+                                 affinity='euclidean', linkage='complete')
+    y_pred = ac.fit_predict(X)
+    print('Number of clusters:', len(set(y_pred)))
+    plot_dendrogram(ac, truncate_mode='level', p=4)
+    show_scatter(X, y_pred)
+
+    ########################################
+
+    ac = AgglomerativeClustering(n_clusters=None, distance_threshold=3,
+                                 affinity='l1', linkage='complete')
+    y_pred = ac.fit_predict(X)
+    print('Number of clusters:', len(set(y_pred)))
+    plot_dendrogram(ac, truncate_mode='level', p=4)
+    show_scatter(X, y_pred)
+
+
+
+if __name__ == '__main__':
+    moons()
+    circles()
+
+
+
