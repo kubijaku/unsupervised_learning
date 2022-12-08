@@ -61,6 +61,14 @@ def moons():
     plt.show()
     ###########################################
 
+    ms = MeanShift(cluster_all=False)
+    y_pred = ms.fit_predict(X)
+    centers = ms.cluster_centers_
+    print("Number of clusters: ", len(centers))
+    show_scatter(X, y_pred, centers)
+
+    ############################################
+
 
     dbscan = DBSCAN(eps=0.3)
     y_pred = dbscan.fit_predict(X)
@@ -76,11 +84,11 @@ def moons():
     plot_dendrogram(ac, truncate_mode='level', p=4)
     show_scatter(X, y_pred)
 
-    ac = AgglomerativeClustering(n_clusters=None, distance_threshold=3,
+    ab = AgglomerativeClustering(n_clusters=None, distance_threshold=3,
                                  affinity='l1', linkage='complete')
-    y_pred = ac.fit_predict(X)
+    y_pred = ab.fit_predict(X)
     print('Number of clusters:', len(set(y_pred)))
-    plot_dendrogram(ac, truncate_mode='level', p=4)
+    plot_dendrogram(ab, truncate_mode='level', p=4)
     show_scatter(X, y_pred)
 
 def circles():
@@ -136,6 +144,14 @@ def circles():
     print('Number of clusters:', len(set(y_pred)))
     plot_dendrogram(ac, truncate_mode='level', p=4)
     show_scatter(X, y_pred)
+
+    #################################
+
+    ms = MeanShift(cluster_all=False)
+    y_pred = ms.fit_predict(X)
+    centers = ms.cluster_centers_
+    print("Number of clusters: ", len(centers))
+    show_scatter(X, y_pred, centers)
 
 def plot_pixels(data, title, colors=None, N=10000):
     if colors is None:
@@ -194,12 +210,12 @@ def photo():
 
     ########################################### 10 colors
 
-    kmeans = KMeans(n_clusters=10)
+    kmeans = KMeans(n_clusters=9)
     kmeans.fit(data)
     new_colors = kmeans.cluster_centers_[kmeans.predict(data)]
 
     plot_pixels(data, colors=new_colors,
-                title="Reduced color space: 10 colors")
+                title="Reduced color space: 9 colors")
 
     china_recolored = new_colors.reshape(china.shape)
 
@@ -209,7 +225,7 @@ def photo():
     ax[0].imshow(china)
     ax[0].set_title('Original Image', size=16)
     ax[1].imshow(china_recolored)
-    ax[1].set_title('10-color Image', size=16);
+    ax[1].set_title('9-color Image', size=16);
     plt.show()
 
 if __name__ == '__main__':
